@@ -36,7 +36,7 @@ For the first research question, I generated maps visualising the mean
 dung densities within conifer-forest sites for the six-year period for
 red and roe deer respectively:
 
-![](C:/Users\xr824576\OneDrive%20-%20University%20of%20Reading\Actual_masters_important_doc_folder\Masters\GIS\GIS_ass_2\map1_GIS_masters.png)
+![](README_files/figure-gfm/map1_GIS_masters.png)
 
 The maps show the extent of conifer forests within Glen Tanar as green
 polygons, with points showing mean winter dung densities (no.
@@ -134,7 +134,7 @@ densities in conifer forests depend on elevation for red and roe deer
 respectively. I first generated maps visualising the dung densities
 against the elevational layout of Glen Tanar:
 
-![](C:/Users\xr824576\OneDrive%20-%20University%20of%20Reading\Actual_masters_important_doc_folder\Masters\GIS\GIS_ass_2\map2_GIS_masters3.png)
+![](README_files/figure-gfm/map2_GIS_masters3.png)
 
 The maps above show the elevational layout of the full extent of the
 nature reserve, with the distribution of conifer forests and mean
