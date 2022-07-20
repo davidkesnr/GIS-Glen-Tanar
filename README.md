@@ -76,7 +76,7 @@ boxplot(deer$RedMean, deer$RoeMean, names=c("red deer","roe deer"),
         cex.lab=1.2, cex.axis=1.2, ylim = c(0,16), breaks = c(4,8,12))
 ```
 
-![](gis2_msc_markdown_lm_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 In agreement with the map, the distribution of red deer dung density
 shows that the median red deer dung count is higher than the upper
@@ -153,10 +153,11 @@ transformations are needed. First, I checked the distribution of the
 elevation variable:
 
 ``` r
-boxplot(deer$Elevation)
+boxplot(deer$Elevation, ylab = "elevation (m)",cex.lab=1.2, 
+        cex.axis=1.2)
 ```
 
-![](gis2_msc_markdown_lm_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 It shows an even spread of values across the distribution with no
 outliers, so it is unlikely that any transformation of this variable
@@ -169,7 +170,7 @@ among the variables:
 pairs(deer[,c("RedMean","RoeMean","Elevation")], pch=19)
 ```
 
-![](gis2_msc_markdown_lm_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 There appears to be very little covariation between elevation and the
 two dung density variables. There does not appear to be any egregious
@@ -199,7 +200,7 @@ ggplot(deer, aes(Elevation, RedMean))+
   ylab("red deer dung density (no. pellets/50x2m transect)")
 ```
 
-![](gis2_msc_markdown_lm_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 There seems to be a definite positive linear relationship, albeit
 gradual. In agreement with my initial thoughts after seeing the
@@ -219,7 +220,7 @@ par(mfrow = c(2,2), mar = c(2,2,2,2))
 plot(red.lm)
 ```
 
-![](gis2_msc_markdown_lm_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 There does not appear to be anything egregious in these plots: the
 residuals vs fitted plot shows a relatively even spread of residuals
@@ -304,7 +305,7 @@ ggplot(deer, aes(Elevation, RoeMean))+
   ylab("roe deer dung density (no. pellets/50x2m transect)")
 ```
 
-![](gis2_msc_markdown_lm_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 There appears to be very little association between the two variables.
 We might expect that the linear model will reflect this:
@@ -315,7 +316,7 @@ par(mfrow = c(2,2), mar = c(2,2,2,2))
 plot(roe.lm)
 ```
 
-![](gis2_msc_markdown_lm_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 The roe deer data appear to satisfy the assumptions of the model
 reasonably well, although the Q-Q plot again shows some questionable
