@@ -1,4 +1,5 @@
 Deer species browsing incidence in coniferous forests of Glen Tanar
+nature reserve
 ================
 David Kesner
 
@@ -10,46 +11,42 @@ library(ggplot2)
 
 ## Background
 
-During my MSc at the University of Aberdeen, I undertook an analysis of
-ecological data within the Glen Tanar national nature reserve in
-northeast Scotland, as part of a GIS course. I was tasked with
-investigating the factors influencing the winter browsing incidence of
-the woodland and surrounding moorland by deer species (indicated by dung
-density) during the years 2000 to 2005. The data was supplied within a
-geodatabase containing mean winter dung counts measured along 50x2m
-transects for roe (*Capreolus capreolus*) and red deer (*Cervus
-elaphus*) respectively, in addition to habitat codes, and a digital
-terrain model.
+As part of a GIS course I undertook during my MSc at the University of
+Aberdeen, I conducted an analysis of ecological data collected from the
+Glen Tanar national nature reserve in northeast Scotland. I was tasked
+with investigating the factors influencing the winter browsing incidence
+of deer species (indicated by dung density) within the reserve for the
+years 2000 to 2005. The data was supplied within a geodatabase
+containing mean winter dung pellet counts measured along 50x2m transects
+for roe (*Capreolus capreolus*) and red deer (*Cervus elaphus*)
+respectively, in addition to habitat codes and a digital terrain model.
 
-I asked two specific research questions, namely: does winter browsing
-incidence (represented by dung density) in conifer-forest sites at Glen
-Tanar:
+I formulated two research questions: does winter browsing incidence in
+conifer-forest sites at Glen Tanar:
 
-1.  differ between red and roe deer?; and
+1.  differ between red and roe deer? and
 2.  depend on elevation for red and roe deer respectively?
 
-I investigated these questions using ArcGIS as well as R.
+I investigated these questions using ArcGIS and R.
 
 ## Question 1
 
-For the first research question, I generated maps visualising the mean
-dung densities within conifer-forest sites for the six-year period for
-red and roe deer respectively:
+For the first research question, I generated maps in ArcGIS, visualising
+the mean dung densities within conifer-forest sites for the six-year
+period for red and roe deer respectively:
 
 ![](README_files/figure-gfm/map1_GIS_GTNR.png)
 
-The maps show the extent of conifer forests within Glen Tanar as green
+The maps show the extent of the Glen Tanar conifer forests as green
 polygons, with points showing mean winter dung densities (no.
-pellets/50x2m transect) for the six-year period 2000-2005 at 78
-locations within conifer forest, for (a) roe and (b) red deer. The
-labelled point in (b) shows the transect that had the highest dung
-density value among all conifer transects.
+pellets/50x2m transect) for 2000-2005 at 78 locations for (a) roe and
+(b) red deer. The labelled point in (b) shows the transect that had the
+highest mean dung density value among all conifer-forest transects.
 
-It is evident from this map that there is generally a higher dung
-density for red deer than for roe deer in conifer habitats at Glen
-Tanar. To investigate this quantitatively, I aimed to conduct an
-inferential statistical test comparing the means of the two
-distributions, namely a t-test. I first imported the data into R:
+The maps indicate that there is generally a higher dung density for red
+deer than for roe deer across the study site. To investigate this
+quantitatively, I compared the mean dung densities of the two species
+using a t-test. I first imported the data into R:
 
 ``` r
 #read in deer data
@@ -65,28 +62,30 @@ head(deer)
     ## 5        5       21  340660   797450       0    0.00  225.6292
     ## 6        6       19  350960   797500       1    1.16  154.7545
 
-The dataset has columns of mean dung density for red and roe deer, and
-an elevation variable.
-
-I then visualised boxplots of the mean dung counts for the two species:
+The `RedMean` and `RoeMean` columns contain the dung densities for for
+red and roe deer. I then visualised these variables by plotting their
+distributions as boxplots:
 
 ``` r
 boxplot(deer$RedMean, deer$RoeMean, names=c("red deer","roe deer"), 
         ylab = "dung density (no. pellets/50x2m transect)", 
-        cex.lab=1.2, cex.axis=1.2, ylim = c(0,16), breaks = c(4,8,12))
+        cex.lab=1.2, cex.axis=1.2, ylim = c(0,16))
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-In agreement with the map, the distribution of red deer dung density
-shows that the median red deer dung count is higher than the upper
-quartile of the roe deer dung count. Before conducting a t-test, I
-checked whether the variables satisfy the assumptions of the test
-i.e. that they are normally distributed and have equal variances. Both
-variables appear roughly normally distributed, but they do not appear to
-have equal variances. As a rule-of-thumb, if the standard deviation of
-one variable is 4 times or more than that of the other, the data are
-considered heteroscedastic:
+In agreement with the maps, the boxplots indicate that red deer dung
+densities are higher than for roe deer. This can be seen by the median
+red deer dung density being higher than the upper quartile of the roe
+deer distribution.
+
+Before conducting the t-test, I considered whether the variables satisfy
+the assumptions of the test, namely that they are normally distributed
+and have equal variances. Looking at the boxplots, both variables appear
+roughly normally distributed, but they do not appear to have equal
+variances (homoscedasticity). As a rule-of-thumb, if the standard
+deviation of one variable is 4 times or more than that of the other, the
+data are considered heteroscedastic:
 
 ``` r
 sd(deer$RedMean);sd(deer$RoeMean)
@@ -96,10 +95,10 @@ sd(deer$RedMean);sd(deer$RoeMean)
 
     ## [1] 1.512634
 
-The differences in variances are not large enough to conclude that the
-data are heteroscedastic, so I proceeded with the t-test. I tested for a
-difference (in any direction) between the two distributions with a
-two-sided t-test:
+The differences in standard deviations are not large enough to conclude
+that the data are heteroscedastic, so I proceeded with the t-test. I
+tested for a difference in means in any direction using a two-sided
+t-test:
 
 ``` r
 t.test(deer$RedMean, deer$RoeMean, paired = F, alternative = "two.sided")
@@ -117,76 +116,88 @@ t.test(deer$RedMean, deer$RoeMean, paired = F, alternative = "two.sided")
     ## mean of x mean of y 
     ##  3.695256  1.905000
 
-The test statistic of 4.46 is statistically significant well below the
-1% level. More importantly, the output shows that the effect size of the
-mean difference between red and roe deer dung pellets per transect lies
-between \~1 and 2.59 with 95% confidence. This is a sizeable amount,
-considering that the average number of combined roe and red deer pellets
-observed per conifer-forest transect is 5.6. This test has addressed the
-first question, supporting the notion that browsing incidence differs
-between the two deer species, with red deer browsing more than roe deer
-in conifer forests of Glen Tanar.
+The effect size of the mean difference between red and roe deer dung
+pellets per transect lies between \~1 and 2.59 with 95% confidence. This
+is a sizeable amount, considering that the average number of combined
+roe and red deer pellets observed per conifer-forest transect is 5.6.
+The test statistic of 4.46 is statistically significant, well below the
+1% level. This test has addressed the first question, supporting that
+browsing incidence differs between the two deer species, with red deer
+showing higher winter browsing incidence than roe deer in the conifer
+forests of Glen Tanar.
 
 ## Question 2
 
-To address the second question, I investigated whether mean dung
-densities in conifer forests depend on elevation for red and roe deer
-respectively. I first generated maps visualising the dung densities
-against the elevational layout of Glen Tanar:
+To address the second question, I first generated maps in ArcGIS,
+visualising the dung densities against the elevational layout of Glen
+Tanar:
 
 ![](README_files/figure-gfm/map2_GIS_GTNR.png)
 
-The maps above show the elevational layout of the full extent of the
-nature reserve, with the distribution of conifer forests and mean
-2000-2005 winter dung densities overlayed for (a) roe and (b) red deer.
-No obvious systematic patterns between dung density and elevation stand
-out for either red or roe deer. Nonetheless, there does appear to be
-high dung densities at some high-elevation conifer forests in the red
-deer map, especially to the south-east of the reserve.
+The maps show the elevational layout of the full extent of the nature
+reserve, with the distribution of conifer forests and mean 2000-2005
+winter dung densities overlayed, for (a) roe and (b) red deer. No
+obvious systematic patterns between dung density and elevation stand out
+for either red or roe deer. Nonetheless, there does appear to be high
+dung densities at some high-elevation conifer forests in the red deer
+map, especially to the south-east of the reserve.
 
 To quantitatively test whether dung density depends on elevation, I used
-a simple linear regression model. Before implementing this, it was
-necessary to visualise the respective potential relationships among
-elevation and the two dung density variables, to identify whether a
-linear model is appropriate for the data and whether any data
-transformations are needed. First, I checked the distribution of the
-elevation variable:
+a simple linear regression modelling approach. Before implementing this,
+I explored the data, first by checking the distribution of the elevation
+variable:
 
 ``` r
-boxplot(deer$Elevation, ylab = "elevation (m)",cex.lab=1.2, 
-        cex.axis=1.2)
+boxplot(deer$Elevation, ylab = "elevation (m)",cex.lab=1.2, cex.axis=1.2)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-It shows an even spread of values across the distribution with no
-outliers, so it is unlikely that any transformation of this variable
-will be needed.
+It shows an even spread of values with no outliers, so it is unlikely
+that any transformation of this variable will be needed.
 
-I then plotted a scatterplot matrix to identify potential relationships
-among the variables:
+I then visualised the dung density distributions against elevation using
+a scatterplot matrix, to identify whether a linear model is appropriate
+for the data and whether any data transformations are needed. I added
+the correlation values among the variables for insight into any linear
+relationships that might exist. Doing this using the `pairs` function
+requires writing a separate correlation function for it’s `lower.panel`
+argument:
 
 ``` r
-pairs(deer[,c("RedMean","RoeMean","Elevation")], pch=19)
+panel.cor <- function(x, y){
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    r <- round(cor(x, y), digits=2)
+    txt <- paste0("r = ", r)
+    text(0.5, 0.5, txt, cex = 2)
+}
+
+#point aesthetics
+upper.panel<-function(x, y){
+  points(x,y, pch = 19)
+}
+
+#plot
+pairs(deer[,c("RedMean","RoeMean","Elevation")], lower.panel = panel.cor,
+      upper.panel = upper.panel)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
-There appears to be very little covariation between elevation and the
-two dung density variables. There does not appear to be any egregious
-issues with data spanning orders of magnitude, non-linear relationships,
-or heteroscedasticity of the dung density variables across the elevation
-variable range, so no transformations were done.
-
-The other assumptions of the linear regression model are addressed by
-looking at the diagnostic plots that are outputted with its
-implementation.
+The data does not appear to have any major issues necessitating data
+transformations, like outliers spanning orders of magnitude, non-linear
+relationships, or heteroscedasticity of the dung density variables
+across the range of the elevation variable, so no transformations were
+done. However, there seems to be very little covariation between
+elevation and the two dung density variables, with perhaps a weak
+relationship existing between elevation and red deer dung density.
 
 ### Red deer
 
-Before implementing the model on the red deer data, I checked what a
-linear relationship between red deer dung densities and elevation would
-look like:
+Before conducting the linear regression on the red deer data, I looked
+more closely at what a linear model between this variable and elevation
+would look like:
 
 ``` r
 ggplot(deer, aes(Elevation, RedMean))+
@@ -202,20 +213,24 @@ ggplot(deer, aes(Elevation, RedMean))+
 
 ![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-There seems to be a definite positive linear relationship, albeit
-gradual. In agreement with my initial thoughts after seeing the
-scatterplot matrix, there does not appear to be any issues of
-heteroscedasticity of residuals around the fitted line, so a linear
-model seems appropriate.
+There seems to be a gradual positive linear relationship. Again, there
+does not appear to be any issues of heteroscedasticity of residuals
+around the fitted line, so a linear model seems appropriate.
 
-I first implemented the linear model and looked at diagnostic plots of
-the model. I divided elevation by 10 in order to be able to interpret
-the slope coefficient of the model in terms of a 10m unit increase in
-elevation, rather than 1m.
+I then looked more closely at whether the assumptions of a linear model
+on these data are satisfied, by implementing the model in R and
+investigating the diagnostic plots. I first divided the elevation
+variable by 10, in order to be able to interpret the slope coefficient
+of the model in terms of a 10m unit increase in elevation:
 
 ``` r
+#scale elevation
 deer$elev.scale <- deer$Elevation/10
+
+#run model
 red.lm <- lm(RedMean~elev.scale, deer)
+
+#plot
 par(mfrow = c(2,2), mar = c(2,2,2,2))
 plot(red.lm)
 ```
@@ -224,16 +239,16 @@ plot(red.lm)
 
 There does not appear to be anything egregious in these plots: the
 residuals vs fitted plot shows a relatively even spread of residuals
-around the fitted line, implying a simple linear model is appropriate
-for these data; the residuals appear roughly normal, with the majority
-conforming closely to the idealised normal distribution in the Q-Q plot,
-although there are some outliers in the bottom right corner which may be
-a problem; the scale-location plot shows the residuals are spread quite
-evenly and randomly across the range of predictors, implying they
-approximate homoscedasticity; the residuals vs leverage informs us that
-any outliers in the data don’t have an outsized influence on the
-regression results. Overall, it seems reasonable to assume that the
-model satisfies all assumptions. I gave the few points in the bottom
+around the fitted line, implying a linear model is appropriate for these
+data; the residuals appear roughly normally distributed, with the
+majority conforming closely to the idealised normal distribution in the
+Q-Q plot, although there are some outliers in the bottom-right corner;
+the scale-location plot shows that the residuals are spread quite evenly
+and randomly across the range of the predictor, implying that they
+approximate homoscedasticity; and the residuals vs leverage plot
+suggests that any outliers in the data don’t have an outsized influence
+on the regression results. Overall, it seems reasonable to assume that
+the model satisfies all assumptions. I gave the few points in the bottom
 right of the Q-Q plot the benefit of the doubt, and went ahead with
 interpreting the model output:
 
@@ -260,7 +275,7 @@ summary(red.lm)
     ## Multiple R-squared:  0.0654, Adjusted R-squared:  0.0531 
     ## F-statistic: 5.318 on 1 and 76 DF,  p-value: 0.02384
 
-and the confidence interval around the slope coefficient:
+And the confidence interval around the slope coefficient:
 
 ``` r
 confint(red.lm, 'elev.scale', level=0.95)
@@ -269,29 +284,27 @@ confint(red.lm, 'elev.scale', level=0.95)
     ##                 2.5 %    97.5 %
     ## elev.scale 0.01597831 0.2184424
 
-The output shows that the intercept estimate of 0.33 means that there
-are 0.33 red deer dung pellets within the average transect at 0
-elevation - this is not really informative because it extrapolates past
-the elevational range and outside of the nature reserve!
-
 The slope coefficient of the elevation variable indicates that red deer
-dung density increases by an average of 0.12 pellets/transect with a 10m
-increase in elevation. The 95% confidence interval of this estimate has
-a lower bound above 0, and the test statistic of 2.3 is significant at
-the 5% level, suggesting that this relationship is real. However, the
-adjusted R-squared shows that elevation explains only about 5% of the
-overall variation in red deer dung density, so elevation is a very weak
-predictor of red deer browsing incidence! There are probably multiple
-other factors that determine where red deer prefer to browse.
-
-## Question 2
+dung density increases by an average of 0.12 pellets/transect when
+elevation increases by 10m. This is a relatively modest amount,
+considering that all but one of the transects fall within an elevational
+range of \~300m, and the interquartile range of the red deer dung
+density variable is \~5.5. If traversing the \~300m elevational range,
+the average increase in red deer dung pellets/transect is \~3.6, about
+two thirds of the dung density interquartile range. The 95% confidence
+interval of this estimate has a lower bound above 0 and the test
+statistic of 2.3 is significant at the 5% level, suggesting that this
+relationship is robust. However, the adjusted R-squared value indicates
+that elevation explains only about 5% of the overall variation in red
+deer dung density, suggesting that elevation has very low importance for
+predicting red deer browsing incidence. There are likely to be multiple
+other factors that influence where red deer prefer to browse.
 
 ### Roe deer
 
-To complete the analysis for question 2, the same linear regression
-procedure followed for red deer above was applied to the roe deer data,
-first visualising a hypothetical linear model between roe deer dung
-density and elevation:
+To complete the analysis for question 2, I applied the same linear
+regression procedure above to the roe deer data. Once again, I first
+visualised the linear relationship between dung density and elevation:
 
 ``` r
 ggplot(deer, aes(Elevation, RoeMean))+
@@ -307,8 +320,9 @@ ggplot(deer, aes(Elevation, RoeMean))+
 
 ![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
-There appears to be very little association between the two variables.
-We might expect that the linear model will reflect this:
+In agreement with the scatterplot matrix, there appears to be a
+negligible association between the two variables. We can expect that the
+linear model will reflect this:
 
 ``` r
 roe.lm <- lm(RoeMean~elev.scale, deer)
@@ -319,10 +333,11 @@ plot(roe.lm)
 ![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 The roe deer data appear to satisfy the assumptions of the model
-reasonably well, although the Q-Q plot again shows some questionable
-features - the observations in the bottom left as well as the two
-points17 and 51 in the top right. Again, I decided to give the data the
-benefit of the doubt and proceed with interpreting the regression model:
+reasonably well, although the Q-Q plot once again shows some
+questionable features - the observations in the bottom left as well as
+the two points 17 and 51 in the top right of the plot. Again, I decided
+to give the data the benefit of the doubt, and proceed with interpreting
+the model:
 
 ``` r
 summary(roe.lm)
@@ -354,18 +369,17 @@ confint(roe.lm, 'elev.scale', level=0.95)
     ##                  2.5 %     97.5 %
     ## elev.scale -0.03010916 0.06830098
 
-As expected, there is no clear pattern between elevation and roe deer
-dung density. The variation explained by this model is below 1%, and the
-95% confidence interval of the elevation slope coefficient spans 0. From
-this, it seems clear that roe deer show no elevational preferences in
-where they browse.
+As expected, there is no evidence for a relationship between elevation
+and roe deer dung density. The variation explained by this model is
+below 1%, and the 95% confidence interval of the slope coefficient spans
+0. This suggests that roe deer show no elevational preferences in where
+they browse.
 
-In summary, this analysis reveals some important deer browsing
-characteristics within coniferous habitats of Glen Tanar during winter,
-that could be useful for managers of Glen Tanar towards effectively
-allocating resources to the maintenance of conifer forests in the
-reserve. The results suggest that red deer browse more heavily than roe
-deer, and that red deer generally prefer to browse at higher elevation
-conifer forests, though elevation is probably a minor factor informing
-where red deer prefer to browse. Roe deer show no elevational
-preferences in conifer-forest browsing.
+In summary, this analysis reveals some important features of winter deer
+browsing incidence within coniferous habitats of Glen Tanar, that can be
+useful towards effective management of conifer forests in the reserve.
+The analysis indicates that red deer browse more heavily than roe deer,
+with red deer showing a weak preference for browsing at higher
+elevations, although there are likely to be far more important factors
+than elevation informing red deer browsing preferences which remain
+unidentified.
