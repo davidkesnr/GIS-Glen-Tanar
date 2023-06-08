@@ -242,14 +242,14 @@ residuals vs fitted plot shows a relatively even spread of residuals
 around the fitted line, implying a linear model is appropriate for these
 data; the residuals appear roughly normally distributed, with the
 majority conforming closely to the idealised normal distribution in the
-Q-Q plot, although there are some outliers in the bottom-right corner;
+Q-Q plot, although there are some outliers in the bottom-left corner;
 the scale-location plot shows that the residuals are spread quite evenly
 and randomly across the range of the predictor, implying that they
 approximate homoscedasticity; and the residuals vs leverage plot
 suggests that any outliers in the data don’t have an outsized influence
 on the regression results. Overall, it seems reasonable to assume that
 the model satisfies all assumptions. I gave the few points in the bottom
-right of the Q-Q plot the benefit of the doubt, and went ahead with
+left of the Q-Q plot the benefit of the doubt, and went ahead with
 interpreting the model output:
 
 ``` r
